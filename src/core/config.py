@@ -21,7 +21,6 @@ class Settings(BaseSettings):
     secret: str
     host: str
     port: int
-
     first_superuser_email: EmailStr = 'admin@example.com'
     first_superuser_password: str = '12345'
 
