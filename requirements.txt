@@ -10,6 +10,6 @@ fastapi-users~=12.1.2
 fastapi-users-db-sqlalchemy~=6.0.1
 uvicorn~=0.24.0.post1
 email-validator~=2.0.0.post2
-setuptools~-69.0.2
+setuptools~=69.0.2
 passlib~=1.7.4
 watchdog~=3.0.0
