@@ -6,7 +6,7 @@ from src.core.config import settings
 from src.db.db import get_async_session
 from src.db.init_db import create_first_superuser
 
-app = FastAPI(title=settings.title)
+app = FastAPI(title=settings.project_title)
 
 app.include_router(router)
 

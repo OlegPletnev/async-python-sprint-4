@@ -2,6 +2,7 @@ from http import HTTPStatus
 from random import choice
 from string import ascii_letters, digits
 from typing import Annotated
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Body
 from fastapi_users_db_sqlalchemy import GUID
@@ -13,14 +14,15 @@ from src.core.user import current_active_user
 from src.crud.url import url_crud, url_click
 from src.db.db import get_async_session
 from src.models import ShortURL, User, ClickURL
-from src.schemas.url import SchemaCreateURL, SchemaCreateClick, SchemaUpdateURL
+from src.schemas.url import SchemaCreateURL, SchemaCreateClick, \
+    SchemaUpdateURL, SchemaURL, SchemaClick
 
 router = APIRouter(tags=['short url'])
 
 
 @router.post(
     '/',
-    response_model=ShortURL,
+    response_model=SchemaURL,
     response_model_exclude_none=True,
     status_code=HTTPStatus.CREATED,
 )
@@ -47,10 +49,10 @@ async def create_short_url(
 
 @router.get(
     '/{short_id}/status',
-    response_model=dict | list[ClickURL],
+    response_model=None,
 )
 async def get_url_status(
-        short_id: GUID,
+        short_id: UUID,
         full_info: Annotated[bool, Query(alias='full-info')] = False,
         max_result: Annotated[
             int | None, Query(gt=0, alias='max-result')
@@ -82,7 +84,7 @@ async def get_url_status(
     status_code=HTTPStatus.TEMPORARY_REDIRECT,
 )
 async def redirect_by_short_url(
-        short_id: GUID,
+        short_id: UUID,
         user: User | None = Depends(current_active_user),
         session: AsyncSession = Depends(get_async_session),
 ) -> dict[str, str]:
@@ -128,9 +130,9 @@ def delete_user(id: str):
     )
 
 
-@router.patch('/{short_id}', response_model=ShortURL)
+@router.patch('/{short_id}', response_model=SchemaURL)
 async def update_reservation(
-        short_id: GUID,
+        short_id: UUID,
         obj_in: SchemaUpdateURL,
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_active_user),

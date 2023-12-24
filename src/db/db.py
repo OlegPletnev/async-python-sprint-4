@@ -22,7 +22,7 @@ class PreBase:
 
 Base = declarative_base(cls=PreBase)
 
-engine = create_async_engine(settings.database_dsn)
+engine = create_async_engine(settings.database_dsn.unicode_string())
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
 

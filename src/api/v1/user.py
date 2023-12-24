@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
@@ -42,7 +43,7 @@ router.include_router(
 @router.get(
     '/user/status',
     tags=['users'],
-    response_model=list[ShortURL] | None,
+    response_model=None,
 )
 async def get_user_status(
         user: User = Depends(current_active_user),
