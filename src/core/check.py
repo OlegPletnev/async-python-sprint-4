@@ -2,7 +2,6 @@ from http import HTTPStatus
 from uuid import UUID
 
 from fastapi import HTTPException
-from fastapi_users_db_sqlalchemy import GUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.crud.url import url_crud

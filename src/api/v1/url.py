@@ -5,17 +5,15 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Body
-from fastapi_users_db_sqlalchemy import GUID
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.check import check_exist_id
 from src.core.user import current_active_user
 from src.crud.url import url_crud, url_click
 from src.db.db import get_async_session
-from src.models import ShortURL, User, ClickURL
+from src.models import ShortURL, User
 from src.schemas.url import SchemaCreateURL, SchemaCreateClick, \
-    SchemaUpdateURL, SchemaURL, SchemaClick
+    SchemaUpdateURL, SchemaURL
 
 router = APIRouter(tags=['short url'])
 
@@ -73,7 +71,7 @@ async def get_url_status(
     """
     record = await check_exist_id(short_id=short_id, session=session)
     records = await url_click.get(
-        field='short_id', value=record.id, return_all=True, session=session)
+        field='url_id', value=record.id, return_all=True, session=session)
     if full_info:
         return records[offset:max_result]
     return {'Количество совершенных переходов': len(records)}
@@ -118,11 +116,14 @@ async def redirect_by_short_url(
 
 @router.delete(
     '/{short_id}',
-    tags=['users'],
     deprecated=True
 )
-def delete_user(id: str):
-    """Не используйте удаление, деактивируйте пользователей."""
+def delete_short_url():
+    """
+    Не используйте удаление, деактивируйте короткие ссылки.
+    Возможность «удаления» сохранённого URL, реализована в методе PATCH,
+    где сама запись остается, но помечается как удалённая
+    """
     raise HTTPException(
         # 405 ошибка - метод не разрешен.
         status_code=HTTPStatus.METHOD_NOT_ALLOWED,
@@ -131,7 +132,7 @@ def delete_user(id: str):
 
 
 @router.patch('/{short_id}', response_model=SchemaURL)
-async def update_reservation(
+async def update_short_url(
         short_id: UUID,
         obj_in: SchemaUpdateURL,
         session: AsyncSession = Depends(get_async_session),

@@ -18,10 +18,8 @@ class Settings(BaseSettings):
     project_name: str
     database_dsn: PostgresDsn
     secret: str
-    # host: str
-    # port: int
-    first_superuser_email: EmailStr = 'admin@example.com'
-    first_superuser_password: str = '123'
+    first_superuser_email: EmailStr
+    first_superuser_password: str
 
     class Config:
         env_file = ENV_FILE_PATH

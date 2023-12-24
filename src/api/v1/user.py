@@ -1,12 +1,10 @@
 from http import HTTPStatus
-from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.user import fastapi_users, auth_backend, current_active_user
-from src.crud.url import url_crud
 from src.db.db import get_async_session
 from src.models import User, ShortURL
 from src.schemas.user import UserRead, UserCreate, UserUpdate
@@ -62,4 +60,3 @@ async def get_user_status(
             detail='Укороченные ссылки отсутствуют'
         )
     return urls.scalars().all()
-

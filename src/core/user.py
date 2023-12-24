@@ -1,7 +1,7 @@
 import re
 import uuid
 
-from fastapi import Depends, Request
+from fastapi import Depends
 from fastapi_users import (
     BaseUserManager, FastAPIUsers, InvalidPasswordException, UUIDIDMixin
 )
@@ -48,21 +48,6 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
             raise InvalidPasswordException(
                 reason="Password не должен содержать e-mail"
             )
-
-    async def on_after_register(
-            self, user: User, request: Request | None = None
-    ):
-        print(f'Пользователь {user.id} уже зарегистрирован.')
-
-    async def on_after_forgot_password(
-        self, user: User, token: str, request: Request | None = None
-    ):
-        print(f'Пользователь {user.id} забыл свой password. Сброс токена: {token}')
-
-    async def on_after_request_verify(
-        self, user: User, token: str, request: Request | None = None
-    ):
-        print(f"Подтверждение для пользователя {user.id}. Токен: {token}")
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):
