@@ -1,9 +1,7 @@
-from fastapi import FastAPI, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import FastAPI
 
 from src.api.routers import router
 from src.core.config import settings
-from src.db.db import get_async_session
 from src.db.init_db import create_first_superuser
 
 app = FastAPI(title=settings.project_title)
