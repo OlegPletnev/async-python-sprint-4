@@ -11,17 +11,6 @@ app = FastAPI(title=settings.project_title)
 app.include_router(router)
 
 
-@app.get('/ping', tags=['ping'])
-async def ping_db(
-        session: AsyncSession = Depends(get_async_session)
-):
-    try:
-        await session.execute('SELECT 1')
-        return {"status": "Database is available"}
-    except Exception as e:
-        return {"status": "Database is not available", "error": str(e)}
-
-
 @app.on_event('startup')
 async def startup():
     # Not needed if you setup a migration system like Alembic

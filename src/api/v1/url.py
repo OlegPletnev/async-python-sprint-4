@@ -5,6 +5,7 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Body
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.check import check_exist_id
@@ -43,6 +44,17 @@ async def create_short_url(
     )
 
     return await url_crud.create(session, obj, user)
+
+
+@router.get('/ping', tags=['ping'])
+async def ping_db(
+        session: AsyncSession = Depends(get_async_session)
+):
+    try:
+        await session.execute(select(func.now()))
+        return {"status": "Database is available"}
+    except Exception as e:
+        return {"status": "Database is not available", "error": str(e)}
 
 
 @router.get(
